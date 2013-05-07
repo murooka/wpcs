@@ -13,7 +13,13 @@ class ContestsController < AuthController
   # GET /contests/1
   def show
     @contest = Contest.find(params[:id])
-    @current_user.attend(@contest) unless @current_user.attended? @contest
+    #@current_user.attend(@contest) unless @current_user.attended? @contest
+  end
+
+  def attend
+      @contest = Contest.find(params[:id])
+      @current_user.attend(@contest) unless @current_user.attended? @contest
+      redirect_to :controller=> "contests/problems", :action=> "index", :contest_id=> params[:id]
   end
 
 end

@@ -2,9 +2,15 @@
 
 class Contests::ProblemsController < AuthController
   before_filter :load_contest
+  before_filter :check_attendance
+
   private
   def load_contest
     @contest = Contest.find(params[:contest_id])
+  end
+
+  def check_attendance
+      redirect_to contests_path unless @current_user.attended? @contest
   end
 
   # score calculation: max_score * (1 - 0.5 * time_diff / time_length)
@@ -20,7 +26,7 @@ class Contests::ProblemsController < AuthController
   def index
     @problems = @contest.problems
     @users = User.where(is_admin: false, 'scores.contest_id' => @contest.id)
-    @current_user.attend(@contest) unless @current_user.attended? @contest
+    #@current_user.attend(@contest) unless @current_user.attended? @contest
 
     respond_to do |format|
       format.html # index.html.erb
